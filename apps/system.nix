@@ -2,6 +2,7 @@
 {
   environment.systemPackages = with pkgs; [
     ripgrep
+    rustup
     gnumake
     fzf
     tmux
@@ -11,6 +12,7 @@
     starship
     clang
     fastfetch
+    nautilus
   ];
 
 }

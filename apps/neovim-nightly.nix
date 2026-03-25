@@ -7,5 +7,8 @@
     pkgs.rustfmt
     pkgs.nixfmt
     pkgs.nixd
+    pkgs.slint-lsp
+    pkgs.stylua
+    pkgs.prettier
   ];
 }
