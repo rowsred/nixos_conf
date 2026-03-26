@@ -7,6 +7,7 @@ in
 {
   environment.systemPackages = with pkgs; [
     unstable.firefox
+    unstable.kitty
     btop
     ripgrep
     rustup
