@@ -347,32 +347,32 @@ vim.api.nvim_create_autocmd("BufWrite", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "*",
-	callback = function()
-		local ftype = vim.bo.filetype
-		if ftype == "" or vim.bo.buftype ~= "" then
-			return
-		end
-
-		-- 1. Gunakan mapping internal Neovim (dosini otomatis jadi ini)
-		local lang = vim.treesitter.language.get_lang(ftype) or ftype
-
-		-- 2. Cek fisik: Apakah parser sudah ada di disk?
-		-- Jika sudah ada, jangan panggil install agar tidak muncul error override
-		local parser_exists = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) > 0
-
-		if not parser_exists then
-			-- 3. Jalankan asinkron agar tidak mengunci buffer saat :w
-			vim.schedule(function()
-				pcall(function()
-					-- Gunakan 'silent!' agar tidak ada popup yang mengganggu
-					vim.cmd("silent! TSInstall " .. lang)
-				end)
-			end)
-		end
-	end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = "*",
+-- 	callback = function()
+-- 		local ftype = vim.bo.filetype
+-- 		if ftype == "" or vim.bo.buftype ~= "" then
+-- 			return
+-- 		end
+--
+-- 		-- 1. Gunakan mapping internal Neovim (dosini otomatis jadi ini)
+-- 		local lang = vim.treesitter.language.get_lang(ftype) or ftype
+--
+-- 		-- 2. Cek fisik: Apakah parser sudah ada di disk?
+-- 		-- Jika sudah ada, jangan panggil install agar tidak muncul error override
+-- 		local parser_exists = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) > 0
+--
+-- 		if not parser_exists then
+-- 			-- 3. Jalankan asinkron agar tidak mengunci buffer saat :w
+-- 			vim.schedule(function()
+-- 				pcall(function()
+-- 					-- Gunakan 'silent!' agar tidak ada popup yang mengganggu
+-- 					vim.cmd("silent! TSInstall " .. lang)
+-- 				end)
+-- 			end)
+-- 		end
+-- 	end,
+-- })
 vim.pack.add({
 	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 })
@@ -380,3 +380,23 @@ require("ibl").setup()
 vim.pack.add({
 	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 })
+vim.g.rustaceanvim = {
+	server = {
+		-- Paksa pakai binary dari NixOS
+		cmd = function()
+			return { "rust-analyzer" }
+		end,
+		default_settings = {
+			["rust-analyzer"] = {
+				lru = { capacity = 128 },
+				checkOnSave = {
+					command = "clippy",
+					extraArgs = { "--no-deps" },
+				},
+				procMacro = { enable = true },
+				cargo = { targetDir = true },
+				files = { watcher = "client" },
+			},
+		},
+	},
+}

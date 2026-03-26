@@ -4,6 +4,7 @@
     inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
     pkgs.tree-sitter
     pkgs.rust-analyzer
+    pkgs.clippy
     pkgs.rustfmt
     pkgs.nixfmt
     pkgs.nixd

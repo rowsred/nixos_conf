@@ -12,7 +12,7 @@ NC='\033[0m'
 BOLD='\033[1m'
 
 # --- Configuration ---
-DOTFILES_REPO="$HOME/dotfiles"
+DOTFILES_REPO="$HOME/nixos_conf"
 CONFIG_SRC="$HOME/.config"
 CONFIG_DEST="$DOTFILES_REPO/config"
 
