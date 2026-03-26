@@ -380,23 +380,3 @@ require("ibl").setup()
 vim.pack.add({
 	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 })
-vim.g.rustaceanvim = {
-	server = {
-		-- Paksa pakai binary dari NixOS
-		cmd = function()
-			return { "rust-analyzer" }
-		end,
-		default_settings = {
-			["rust-analyzer"] = {
-				lru = { capacity = 128 },
-				checkOnSave = {
-					command = "clippy",
-					extraArgs = { "--no-deps" },
-				},
-				procMacro = { enable = true },
-				cargo = { targetDir = true },
-				files = { watcher = "client" },
-			},
-		},
-	},
-}
