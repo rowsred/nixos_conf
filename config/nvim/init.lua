@@ -20,15 +20,37 @@ opt.swapfile = false
 --::keymaps
 vim.g.mapleader = " "
 local keymap = vim.keymap.set
-keymap("n", "<leader>w", ":w<CR>", { desc = "Save file" })
-keymap("n", "<leader>e", ":Ex<CR>", { desc = "Explorer" })
-keymap("n", "<leader>q", ":q<CR>", { desc = "Quit" })
-keymap("n", "<leader>x", ":bdelete<CR>", { desc = "Quit" })
-keymap("i", "jk", "<Esc>", { desc = "Quit" })
-keymap("n", "<Tab>", ":bnext<CR>")
-keymap("n", "<S-Tab>", ":bprevious<CR>")
+keymap("n", "<leader>w", function()
+	vim.cmd("w") -- Simpan file
+	vim.notify("Saved", vim.log.levels.INFO, {
+		title = "Neovim",
+		icon = "💾",
+		timeout = 2000, -- 2 detik saja agar cepat hilang
+	})
+end, { desc = "Save file with notification", silent = true })
+keymap("n", "<leader>e", ":Ex<CR>", { desc = "Explorer", silent = true })
+keymap("n", "<leader>q", ":q<CR>", { desc = "Quit", silent = true })
+keymap("n", "<leader>x", ":bdelete<CR>", { desc = "Quit", silent = true })
+keymap("i", "jk", "<Esc>", { desc = "Quit", silent = true })
+keymap("n", "<Tab>", ":bnext<CR>", { silent = true })
+keymap("n", "<S-Tab>", ":bprevious<CR>", { silent = true })
 keymap("v", "<leader>c", "gc", { remap = true })
-keymap("n", "<leader>h", ":lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>")
+keymap("n", "<leader>h", function()
+	-- 1. Cek status saat ini dan balikkan nilainya (toggle)
+	local is_enabled = not vim.lsp.inlay_hint.is_enabled()
+	vim.lsp.inlay_hint.enable(is_enabled)
+
+	-- 2. Kirim notifikasi berdasarkan status baru
+	local msg = is_enabled and "Inlay Hints Enabled" or "Inlay Hints Disabled"
+	local icon = is_enabled and "󰈮" or "󰈰"
+	local level = is_enabled and "info" or "warn"
+
+	vim.notify(msg, level, {
+		title = "LSP",
+		icon = icon,
+		timeout = 2000,
+	})
+end, { desc = "Toggle Inlay Hints", silent = true })
 
 --::
 --::disable auto comment on new line
@@ -380,32 +402,11 @@ require("ibl").setup()
 vim.pack.add({
 	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 })
-vim.g.rustaceanvim = {
-	server = {
-		default_settings = {
-			["rust-analyzer"] = {
-				files = {
-					-- Daftar folder yang WAJIB diabaikan agar RAM tidak bengkak
-					excludeDirs = {
-						"target", -- Folder build Rust (paling besar)
-						".direnv", -- Folder lingkungan Nix (banyak symlink berat)
-						"build", -- Folder build Android/Gradle
-						".git", -- Metadata repository
-						".gradle", -- Cache Gradle yang sangat besar
-						"app/build", -- Build artifact spesifik Android app
-					},
-					-- Mencegah file watcher memantau folder ini secara real-time
-					watcherExclude = {
-						"target",
-						".direnv",
-						"build",
-						".gradle",
-					},
-					checkOnSave = {
-						allTargets = false, -- Jangan cek test/benchmarks, cukup bin/lib saja
-					},
-				},
-			},
-		},
-	},
-}
+
+vim.pack.add({
+	{ src = "https://github.com/folke/noice.nvim" },
+	{ src = "https://github.com/MunifTanjim/nui.nvim" },
+	{ src = "https://github.com/rcarriga/nvim-notify" },
+})
+
+require("noice").setup({})
