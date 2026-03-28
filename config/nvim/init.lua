@@ -17,42 +17,21 @@ opt.clipboard = "unnamedplus"
 opt.mouse = "a"
 opt.undofile = true
 opt.swapfile = false
+
 --::keymaps
 vim.g.mapleader = " "
 local keymap = vim.keymap.set
-keymap("n", "<leader>w", function()
-	vim.cmd("w") -- Simpan file
-	vim.notify("Saved", vim.log.levels.INFO, {
-		title = "Neovim",
-		icon = "💾",
-		timeout = 500, -- 2 detik saja agar cepat hilang
-	})
-end, { desc = "Save file with notification", silent = true })
-keymap("n", "<leader>e", ":Ex<CR>", { desc = "Explorer", silent = true })
-keymap("n", "<leader>q", ":q<CR>", { desc = "Quit", silent = true })
-keymap("n", "<leader>x", ":bdelete<CR>", { desc = "Quit", silent = true })
-keymap("i", "jk", "<Esc>", { desc = "Quit", silent = true })
-keymap("n", "<Tab>", ":bnext<CR>", { silent = true })
-keymap("n", "<S-Tab>", ":bprevious<CR>", { silent = true })
+keymap("n", "<leader>w", ":w<CR>", { desc = "Save file" })
+keymap("n", "<leader>e", ":Ex<CR>", { desc = "Explorer" })
+keymap("n", "<leader>q", ":q<CR>", { desc = "Quit" })
+keymap("n", "<leader>x", ":bdelete<CR>", { desc = "Quit" })
+keymap("i", "jk", "<Esc>", { desc = "Quit" })
+keymap("n", "<Tab>", ":bnext<CR>")
+keymap("n", "<S-Tab>", ":bprevious<CR>")
 keymap("v", "<leader>c", "gc", { remap = true })
-keymap("n", "<leader>h", function()
-	-- 1. Cek status saat ini dan balikkan nilainya (toggle)
-	local is_enabled = not vim.lsp.inlay_hint.is_enabled()
-	vim.lsp.inlay_hint.enable(is_enabled)
+keymap("n", "<leader>h", ":lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>")
 
-	-- 2. Kirim notifikasi berdasarkan status baru
-	local msg = is_enabled and "Inlay Hints Enabled" or "Inlay Hints Disabled"
-	local icon = is_enabled and "󰈮" or "󰈰"
-	local level = is_enabled and "info" or "warn"
-
-	vim.notify(msg, level, {
-		title = "LSP",
-		icon = icon,
-		timeout = 2000,
-	})
-end, { desc = "Toggle Inlay Hints", silent = true })
-
---::
+--:: auto command
 --::disable auto comment on new line
 vim.api.nvim_create_autocmd("FileType", {
 	group = vim.api.nvim_create_augroup("no_auto_comment", {}),
@@ -89,116 +68,6 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 	end,
 })
 
---: auto pairs
--- ==========================================================================
--- FINAL MINIMALIST AUTO PAIRS (NO PLUGINS)
--- Fixed: Triple Quotes, Inside Brackets Delete, and Skip-Over
--- ==========================================================================
-
-local keymap = vim.keymap.set
-local opts = { noremap = true, silent = true }
-
--- Tabel pasangan karakter
-local char_pairs = {
-	["("] = ")",
-	["["] = "]",
-	["{"] = "}",
-	['"'] = '"',
-	["'"] = "'",
-	["`"] = "`",
-}
--- 1. Logic: Auto Insert & Skip-Over
-for open, close in pairs(char_pairs) do
-	keymap("i", open, function()
-		local line = vim.api.nvim_get_current_line()
-		local col = vim.api.nvim_win_get_cursor(0)[2] -- 0-indexed
-		local char_before = line:sub(col, col)
-		local char_after = line:sub(col + 1, col + 1)
-
-		-- Handle Skip-Over: Jika karakter di depan sudah sama dengan penutup
-		if char_after == close then
-			-- Khusus kutip: JANGAN skip jika ingin buat triple quotes (misal: "" -> """)
-			if open == close and char_before == open then
-				return open .. close .. "<Left>"
-			end
-			-- Selain itu, lompati karakter di depan
-			return "<Right>"
-		end
-
-		-- Normal Auto Pair: Masukkan pasangan dan geser kursor ke tengah
-		return open .. close .. "<Left>"
-	end, { expr = true, noremap = true })
-end
-
--- 2. Logic: Smart Backspace (Hapus pasangan sekaligus)
-keymap("i", "<BS>", function()
-	local line = vim.api.nvim_get_current_line()
-	local col = vim.api.nvim_win_get_cursor(0)[2]
-
-	local char_before = line:sub(col, col)
-	local char_after = line:sub(col + 1, col + 1)
-
-	-- Jika kursor berada tepat di tengah pasangan, hapus keduanya
-	if char_pairs[char_before] and char_pairs[char_before] == char_after then
-		return "<BS><Del>"
-	end
-
-	return "<BS>"
-end, { expr = true, noremap = true })
-
--- 3. Logic: Smart Enter (New line dengan indentasi otomatis)
-keymap("i", "<CR>", function()
-	local line = vim.api.nvim_get_current_line()
-	local col = vim.api.nvim_win_get_cursor(0)[2]
-
-	local char_before = line:sub(col, col)
-	local char_after = line:sub(col + 1, col + 1)
-
-	-- Berlaku untuk kurung (), [], dan {}
-	local openers = { ["("] = ")", ["["] = "]", ["{"] = "}" }
-	if openers[char_before] == char_after then
-		return "<CR><Esc>O"
-	end
-
-	return "<CR>"
-end, { expr = true, noremap = true })
---: tab
--- Selalu tampilkan tabline
-vim.opt.showtabline = 2
-function _G.SimpleTabLine()
-	local s = ""
-	local bufs = vim.api.nvim_list_bufs()
-	local current = vim.api.nvim_get_current_buf()
-	local index = 1
-
-	for _, bufnr in ipairs(bufs) do
-		if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted") then
-			local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
-			if name == "" then
-				name = "[No Name]"
-			end
-
-			if bufnr == current then
-				-- Pakai background abu-abu untuk yang aktif
-				s = s .. "%#ActiveTab# " .. index .. ":" .. name .. " "
-			else
-				-- Teks biasa untuk yang tidak aktif
-				s = s .. "%#InactiveTab# " .. index .. ":" .. name .. " "
-			end
-			index = index + 1
-		end
-	end
-	return s .. "%#TabLineFill#"
-end
-
-vim.opt.tabline = "%!v:lua.SimpleTabLine()"
-
-vim.cmd([[
-  highlight ActiveTab guifg=#ffffff guibg=#444444 gui=bold
-  highlight InactiveTab guifg=#888888 guibg=NONE
-  highlight TabLineFill guibg=NONE
-]])
-
 --=============Custom==============
 -- color scheme
 vim.pack.add({
@@ -206,7 +75,7 @@ vim.pack.add({
 })
 vim.cmd("colorscheme rose-pine")
 
--- formater
+-- formater,completion,snippet
 vim.pack.add({
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
@@ -240,6 +109,7 @@ require("blink.cmp").setup({
 	},
 })
 require("mason").setup()
+
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
@@ -302,7 +172,7 @@ vim.lsp.config("nixd", {
 	},
 })
 vim.lsp.config("slint", {
-	cmd = { "slint-lsp" },
+	cmd = "slint-lsp",
 })
 
 vim.lsp.enable("lua_ls")
@@ -310,10 +180,9 @@ vim.lsp.enable("lua_ls")
 vim.lsp.enable("bashls")
 vim.lsp.enable("nixd")
 vim.lsp.enable("slint")
+
 --: diagnostic custom
 local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = "󰋽 " }
-
--- 3. Konfigurasi Diagnostic (Cara Modern)
 vim.diagnostic.config({
 	virtual_text = false, -- Matikan teks di samping agar tidak berantakan
 	signs = {
@@ -336,6 +205,7 @@ vim.diagnostic.config({
 		prefix = "",
 	},
 })
+
 vim.api.nvim_create_autocmd("CursorHold", {
 	callback = function()
 		vim.diagnostic.open_float(nil, {
@@ -348,6 +218,7 @@ vim.api.nvim_create_autocmd("CursorHold", {
 	end,
 })
 vim.opt.updatetime = 300
+
 --: telescope
 vim.pack.add({
 	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
@@ -368,45 +239,42 @@ vim.api.nvim_create_autocmd("BufWrite", {
 		pcall(vim.treesitter.start)
 	end,
 })
+--auto install tree siter
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "*",
+	callback = function()
+		local ftype = vim.bo.filetype
+		if ftype == "" or vim.bo.buftype ~= "" then
+			return
+		end
 
--- vim.api.nvim_create_autocmd("FileType", {
--- 	pattern = "*",
--- 	callback = function()
--- 		local ftype = vim.bo.filetype
--- 		if ftype == "" or vim.bo.buftype ~= "" then
--- 			return
--- 		end
---
--- 		-- 1. Gunakan mapping internal Neovim (dosini otomatis jadi ini)
--- 		local lang = vim.treesitter.language.get_lang(ftype) or ftype
---
--- 		-- 2. Cek fisik: Apakah parser sudah ada di disk?
--- 		-- Jika sudah ada, jangan panggil install agar tidak muncul error override
--- 		local parser_exists = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) > 0
---
--- 		if not parser_exists then
--- 			-- 3. Jalankan asinkron agar tidak mengunci buffer saat :w
--- 			vim.schedule(function()
--- 				pcall(function()
--- 					-- Gunakan 'silent!' agar tidak ada popup yang mengganggu
--- 					vim.cmd("silent! TSInstall " .. lang)
--- 				end)
--- 			end)
--- 		end
--- 	end,
--- })
+		-- 1. Gunakan mapping internal Neovim (dosini otomatis jadi ini)
+		local lang = vim.treesitter.language.get_lang(ftype) or ftype
+
+		-- 2. Cek fisik: Apakah parser sudah ada di disk?
+		-- Jika sudah ada, jangan panggil install agar tidak muncul error override
+		local parser_exists = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) > 0
+
+		if not parser_exists then
+			-- 3. Jalankan asinkron agar tidak mengunci buffer saat :w
+			vim.schedule(function()
+				pcall(function()
+					-- Gunakan 'silent!' agar tidak ada popup yang mengganggu
+					vim.cmd("silent! TSInstall " .. lang)
+				end)
+			end)
+		end
+	end,
+})
 vim.pack.add({
 	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 })
 require("ibl").setup()
+
 vim.pack.add({
 	{ src = "https://github.com/mrcjkb/rustaceanvim" },
+	{ src = "https://github.com/j-hui/fidget.nvim" },
+	{ src = "https://github.com/windwp/nvim-autopairs" },
 })
-
-vim.pack.add({
-	{ src = "https://github.com/folke/noice.nvim" },
-	{ src = "https://github.com/MunifTanjim/nui.nvim" },
-	{ src = "https://github.com/rcarriga/nvim-notify" },
-})
-
-require("noice").setup({})
+require("fidget").setup({})
+require("nvim-autopairs").setup({})
