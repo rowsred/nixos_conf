@@ -1,4 +1,8 @@
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  ...
+}:
 let
   unstable = import inputs.nixpkgs-unstable {
     config = {
@@ -8,6 +12,7 @@ let
   };
 in
 {
+
   environment.systemPackages = with pkgs; [
     unstable.google-chrome
     unstable.kitty
