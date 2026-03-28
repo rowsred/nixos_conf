@@ -6,8 +6,6 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    kitty
-    firefox
     xclip
     rofi
   ];

@@ -16,5 +16,6 @@ in
     pkgs.slint-lsp
     pkgs.stylua
     pkgs.prettier
+    pkgs.lua-language-server
   ];
 }
