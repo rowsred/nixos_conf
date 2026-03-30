@@ -6,8 +6,7 @@
       specialArgs = { inherit inputs; };
       modules = [
         ../hosts/pc_h61
-        #./desktop/niri_noctalia.nix
-        ../desktop/xlibre_dwm.nix
+        inputs.riverKwm.nixosModules.default
         ../apps/system.nix
         ../apps/neovim-nightly.nix
       ];

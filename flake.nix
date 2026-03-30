@@ -17,9 +17,16 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    riverKwm.url = "/home/row/riverKwm";
   };
+
   outputs =
-    { self, flake-parts, ... }@inputs:
+    {
+      self,
+      flake-parts,
+      riverKwm,
+      ...
+    }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
       imports = [

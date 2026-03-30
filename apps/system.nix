@@ -12,6 +12,7 @@ let
   };
 in
 {
+  services.displayManager.ly.enable = true;
 
   environment.systemPackages = with pkgs; [
     unstable.google-chrome

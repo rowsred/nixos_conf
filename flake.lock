@@ -187,6 +187,22 @@
     },
     "nixpkgs_3": {
       "locked": {
+        "lastModified": 1774709303,
+        "narHash": "sha256-D3Q07BbIA2KnTcSXIqqu9P586uWxN74zNoCH3h2ESHg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "8110df5ad7abf5d4c0f6fb0f8f978390e77f9685",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_4": {
+      "locked": {
         "lastModified": 1767996987,
         "narHash": "sha256-/CF5vSpXfjX4Obn1byOuIBirki0U/JDtvVCn6U/HQew=",
         "owner": "NixOS",
@@ -245,6 +261,21 @@
         "type": "github"
       }
     },
+    "riverKwm": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_3"
+      },
+      "locked": {
+        "lastModified": 1774854682,
+        "narHash": "sha256-Qn0WMv/WY4CK+gwRa6a8lhTDfQVjCgwF55qEqe+Frg4=",
+        "path": "/home/row/riverKwm",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/row/riverKwm",
+        "type": "path"
+      }
+    },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -252,6 +283,7 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctalia": "noctalia",
+        "riverKwm": "riverKwm",
         "xlibre-overlay": "xlibre-overlay"
       }
     },
@@ -324,7 +356,7 @@
       "inputs": {
         "fetchurl-sources": "fetchurl-sources",
         "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_4",
         "systems": "systems_2",
         "xlibre-drivers-overlay-choice": "xlibre-drivers-overlay-choice",
         "xserver-meson-flags": "xserver-meson-flags"
