@@ -73,25 +73,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 vim.pack.add({
 	{ src = "https://github.com/marko-cerovac/material.nvim" },
 })
-require("material").setup({
-	contrast = {
-		sidebars = true,
-		floating_windows = true,
-	},
-	custom_colors = function(colors)
-		-- OVERRIDE WARNA AGAR MATCH DENGAN DWM/ROFI
-		colors.editor.bg = "#171d17" -- Background Utama (Pekat)
-		colors.editor.line_numbers = "#424940" -- Line Number pudar
-		colors.editor.selection = "#005231" -- Selection (Hijau Material)
-		colors.main.primary = "#a3ee10" -- Hijau Neovim Aktif
-		colors.main.accent = "#005231" -- Aksen Bar
-	end,
-	disable = {
-		colored_cursor = true, -- Biar kursor ikut warna terminal
-	},
-})
-vim.g.material_style = "deep ocean"
-vim.cmd("colorscheme material")
+vim.cmd("colorscheme material-darker")
 
 -- formater,completion,snippet
 vim.pack.add({
@@ -296,3 +278,4 @@ vim.pack.add({
 	{ src = "https://github.com/junegunn/fzf" },
 })
 keymap("n", "<leader>ff", ":Files<CR>", { desc = "fzf" })
+vim.g.fzf_layout = { down = "40%" }
