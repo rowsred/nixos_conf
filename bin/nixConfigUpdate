@@ -22,6 +22,7 @@ CONFIG_LIST=(
     "nvim:nvim:merge"
     "awesome:awesome:merge"
     "kitty:kitty:merge"
+    "foot:foot:merge"
     "niri:niri:merge"
     "rofi:rofi:merge"
     "sway:sway:merge"

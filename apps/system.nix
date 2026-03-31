@@ -16,7 +16,6 @@ in
 
   environment.systemPackages = with pkgs; [
     unstable.google-chrome
-    unstable.kitty
     unstable.vscodium
     btop
     ripgrep
