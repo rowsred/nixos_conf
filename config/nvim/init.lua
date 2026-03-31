@@ -170,7 +170,7 @@ vim.lsp.config("lua_ls", {
 	},
 })
 vim.lsp.config("slint", {
-	cmd = "slint-lsp",
+	cmd = { "slint-lsp" },
 })
 vim.lsp.config("nil_ls", {
 	settings = {
@@ -240,49 +240,6 @@ vim.api.nvim_create_autocmd("CursorHold", {
 })
 vim.opt.updatetime = 300
 
---: telescope
-vim.pack.add({
-	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
-})
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Telescope find files" })
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Telescope live grep" })
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Telescope help tags" })
-
--- 1. Definisi Warna Material 3 Green
-local bg = "#171d17" -- Background Utama (Pekat)
-local bg_alt = "#222a22" -- Background Input (Surface Variant)
-local fg = "#e1e3df" -- Teks Utama
-local accent = "#005231" -- Hijau Material (Active)
-local select = "#d2e8d1" -- Hijau Mint (Active Text)
-local border = "#424940" -- Outline
-
--- 2. Override Highlight Telescope (Minimalis & Padat)
-local hl = vim.api.nvim_set_hl
-hl(0, "TelescopeNormal", { bg = bg, fg = fg })
-hl(0, "TelescopeBorder", { bg = bg, fg = border })
-hl(0, "TelescopePromptNormal", { bg = bg_alt, fg = fg })
-hl(0, "TelescopePromptBorder", { bg = bg_alt, fg = border })
-hl(0, "TelescopePromptPrefix", { bg = bg_alt, fg = select })
-hl(0, "TelescopeSelection", { bg = accent, fg = select, bold = true })
-hl(0, "TelescopeSelectionCaret", { bg = accent, fg = select })
-hl(0, "TelescopeResultsDiffAdd", { fg = "#b6ffad" }) -- Hijau cerah untuk file baru
-
--- 3. Konfigurasi UI Telescope yang Rapat
-require("telescope").setup({
-	defaults = {
-		layout_strategy = "horizontal",
-		layout_config = {
-			height = 0.6, -- Lebih pendek agar compact
-			width = 0.8,
-			prompt_position = "top",
-		},
-		sorting_strategy = "ascending",
-		borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-	},
-})
-
 --: treesitter
 vim.pack.add({
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
@@ -332,3 +289,10 @@ vim.pack.add({
 })
 require("fidget").setup({})
 require("nvim-autopairs").setup({})
+--:fzf nvim
+
+vim.pack.add({
+	{ src = "https://github.com/junegunn/fzf.vim" },
+	{ src = "https://github.com/junegunn/fzf" },
+})
+keymap("n", "<leader>ff", ":Files<CR>", { desc = "fzf" })
