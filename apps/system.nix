@@ -17,8 +17,11 @@ in
   environment.systemPackages = with pkgs; [
     unstable.google-chrome
     unstable.vscodium
+    unstable.kitty
+    unstable.fuzzel
     btop
     ripgrep
+    fd
     rustup
     gnumake
     fzf

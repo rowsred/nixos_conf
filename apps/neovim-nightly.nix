@@ -17,5 +17,7 @@ in
     pkgs.stylua
     pkgs.prettier
     pkgs.lua-language-server
+    pkgs.nerd-fonts.symbols-only
+
   ];
 }
