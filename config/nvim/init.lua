@@ -22,12 +22,21 @@ vim.cmd([[
 ]])
 
 -- 2. Fungsi LSP (Jangan sampai hilang!)
+--
 local function lsp_status()
 	local clients = vim.lsp.get_clients({ bufnr = 0 })
-	-- Ambil nama client pertama saja agar rapi
-	return #clients > 0 and "active_lsp : " .. clients[1].name or ""
-end
+	if #clients == 0 then
+		return ""
+	end
 
+	local names = {}
+	for _, client in ipairs(clients) do
+		table.insert(names, client.name)
+	end
+
+	-- Menghasilkan output: "enable lsp: nngjslint, rust-analyzer"
+	return "enable lsp: " .. table.concat(names, ", ")
+end
 -- 3. Fungsi Utama Statusline
 function MyStatus()
 	local m = vim.api.nvim_get_mode().mode
@@ -61,6 +70,7 @@ vim.g.mapleader = " "
 local map = vim.api.nvim_set_keymap
 map("i", "jk", "<Esc>", { noremap = true })
 map("n", "<leader>w", ":w<CR>", { noremap = true })
+map("n", "<leader>nh", ":nohl<CR>", { noremap = true })
 map("n", "<leader>q", ":q<CR>", { noremap = true })
 map("n", "<leader>x", ":bdel<CR>", { noremap = true })
 map("n", "<leader>ff", ":Pick files<CR>", { noremap = true })
@@ -84,6 +94,7 @@ if status_fidget then
 end
 require("ibl").setup()
 require("mini.basics").setup()
+require("mini.icons").setup()
 require("mini.pairs").setup()
 require("mini.completion").setup({
 	lsp_completion = {
@@ -189,3 +200,21 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("nil_ls")
+
+-- Menampilkan error di popup window saat kursor tertahan (hold)
+vim.api.nvim_create_autocmd("CursorHold", {
+	callback = function()
+		local opts = {
+			focusable = false,
+			close_events = { "CursorMoved", "CursorMovedI", "BufLeave" },
+			border = "rounded",
+			source = "always",
+			prefix = " ",
+			scope = "cursor",
+		}
+		vim.diagnostic.open_float(nil, opts)
+	end,
+})
+
+-- Mengatur durasi "hold" (defaultnya 4000ms/4 detik, kita percepat jadi 300ms)
+vim.o.updatetime = 300
