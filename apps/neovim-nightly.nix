@@ -14,6 +14,7 @@ in
     pkgs.rustfmt
     pkgs.nixfmt
     pkgs.slint-lsp
+    pkgs.clang-tools
     pkgs.stylua
     pkgs.prettier
     pkgs.lua-language-server

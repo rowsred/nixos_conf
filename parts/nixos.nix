@@ -6,7 +6,8 @@
       specialArgs = { inherit inputs; };
       modules = [
         ../hosts/pc_h61
-        inputs.riverKwm.nixosModules.default
+        inputs.kwm.nixosModules.default
+        inputs.rill.nixosModules.default
         ../apps/system.nix
         ../apps/neovim-nightly.nix
       ];

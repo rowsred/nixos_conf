@@ -200,6 +200,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("nil_ls")
+vim.lsp.enable("clangd")
 
 -- Menampilkan error di popup window saat kursor tertahan (hold)
 vim.api.nvim_create_autocmd("CursorHold", {

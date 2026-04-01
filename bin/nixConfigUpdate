@@ -25,6 +25,7 @@ CONFIG_LIST=(
     "foot:foot:merge"
     "niri:niri:merge"
     "kwm:kwm:merge"
+    "rill:rill:merge"
     "rofi:rofi:merge"
     "sway:sway:merge"
     "VSCodium:VSCodium:merge"

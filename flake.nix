@@ -13,18 +13,18 @@
     xlibre-overlay.url = "git+https://codeberg.org/takagemacoed/xlibre-overlay";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    rill.url = "github:rowsred/rill_river_modules_nixos";
+    kwm.url = "github:rowsred/river_kwm_modules_nixos";
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    riverKwm.url = "/home/row/riverKwm";
   };
 
   outputs =
     {
       self,
       flake-parts,
-      riverKwm,
       ...
     }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
