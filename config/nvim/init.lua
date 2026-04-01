@@ -1,115 +1,48 @@
---:: options
-local opt = vim.opt
-opt.number = true
-opt.relativenumber = true
-opt.cursorline = true
-opt.termguicolors = true
-opt.signcolumn = "yes"
-opt.scrolloff = 10
-opt.tabstop = 2
-opt.shiftwidth = 2
-opt.expandtab = true
-opt.smartindent = true
-opt.ignorecase = true
-opt.smartcase = true
-opt.updatetime = 250
-opt.clipboard = "unnamedplus"
-opt.mouse = "a"
-opt.undofile = true
-opt.swapfile = false
-
---::keymaps
 vim.g.mapleader = " "
-local keymap = vim.keymap.set
-keymap("n", "<leader>w", ":w<CR>", { desc = "Save file" })
-keymap("n", "<leader>e", ":Ex<CR>", { desc = "Explorer" })
-keymap("n", "<leader>q", ":q<CR>", { desc = "Quit" })
-keymap("n", "<leader>x", ":bdelete<CR>", { desc = "Quit" })
-keymap("i", "jk", "<Esc>", { desc = "Quit" })
-keymap("n", "<Tab>", ":bnext<CR>")
-keymap("n", "<S-Tab>", ":bprevious<CR>")
-keymap("v", "<leader>c", "gc", { remap = true })
-keymap("n", "<leader>h", ":lua vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())<CR>")
+local map = vim.api.nvim_set_keymap
+map("i", "jk", "<Esc>", { noremap = true })
+map("n", "<leader>w", ":w<CR>", { noremap = true })
+map("n", "<leader>q", ":q<CR>", { noremap = true })
+map("n", "<leader>x", ":bdel<CR>", { noremap = true })
+map("n", "<leader>ff", ":Pick files<CR>", { noremap = true })
+vim.o.clipboard = "unnamedplus"
+vim.opt.termguicolors = true
+vim.opt.tabstop = 4 -- Lebar visual dari sebuah karakter tab
+vim.opt.softtabstop = 4 -- Jumlah spasi yang dimasukkan saat menekan <Tab>
+vim.opt.shiftwidth = 4 -- Jumlah spasi untuk indentasi otomatis (>> atau <<)
+vim.opt.expandtab = true -- Mengubah karakter tab menjadi spasi
 
---:: auto command
---::disable auto comment on new line
-vim.api.nvim_create_autocmd("FileType", {
-	group = vim.api.nvim_create_augroup("no_auto_comment", {}),
-	callback = function()
-		vim.opt_local.formatoptions:remove({ "c", "r", "o" })
-	end,
-})
---:: hightlight cursor
-vim.api.nvim_set_hl(0, "SearchMatch", { bg = "#3e4452", fg = "NONE", underline = true })
-local highlight_group = vim.api.nvim_create_augroup("BufferHighlight", { clear = true })
-vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-	group = highlight_group,
-	callback = function()
-		if vim.w.current_match_id then
-			pcall(vim.fn.matchdelete, vim.w.current_match_id)
-			vim.w.current_match_id = nil
-		end
-		local word = vim.fn.expand("<cword>")
-		if word ~= "" and word:match("^[a-zA-Z0-9_]+$") then
-			-- Gunakan pola regex agar hanya kata yang pas yang kena highlight
-			local pattern = [[\<]] .. word .. [[\>]]
-			-- Terapkan highlight ke seluruh buffer
-			vim.w.current_match_id = vim.fn.matchadd("SearchMatch", pattern, -1)
-		end
-	end,
-})
-vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-	group = highlight_group,
-	callback = function()
-		if vim.w.current_match_id then
-			pcall(vim.fn.matchdelete, vim.w.current_match_id)
-			vim.w.current_match_id = nil
-		end
-	end,
-})
-
---=============Custom==============
--- color scheme
 vim.pack.add({
+	{ src = "https://github.com/nvim-mini/mini.nvim" },
+	{ src = "https://github.com/neovim/nvim-lspconfig" },
+	{ src = "https://github.com/j-hui/fidget.nvim" },
+	{ src = "https://github.com/stevearc/conform.nvim" },
+	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 	{ src = "https://github.com/marko-cerovac/material.nvim" },
+	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
+	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
 vim.cmd("colorscheme material-darker")
 
--- formater,completion,snippet
-vim.pack.add({
-	{ src = "https://github.com/stevearc/conform.nvim" },
-	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/saghen/blink.cmp", version = "v1.5.0" },
-	{ src = "https://github.com/rafamadriz/friendly-snippets" },
-})
-require("blink.cmp").setup({
-	keymap = { preset = "default" },
-	completion = {
-		menu = {
-			draw = {
-				-- Kita tambahkan 'source_name' di kolom paling kanan
-				columns = {
-					{ "label", "label_description", gap = 1 },
-					{ "kind_icon", "source_name", gap = 1 },
-				},
-			},
-		},
-	},
-	-- Default list of enabled providers defined so that you can extend it
-	-- elsewhere in your config, without redefining it, due to `opts_extend`
-	sources = {
-		default = { "snippets", "buffer", "path", "lsp" },
-		providers = {
-			buffer = {
-				score_offset = 100, -- Naikkan angka ini agar buffer lebih diprioritaskan
-				min_keyword_length = 2, -- Mulai muncul setelah ketik 2 karakter
-			},
-		},
-	},
-})
-require("mason").setup()
+local status_fidget, fidget = pcall(require, "fidget")
+if status_fidget then
+	fidget.setup({})
+end
 
+require("ibl").setup()
+require("mini.basics").setup()
+require("mini.pairs").setup()
+require("mini.completion").setup({
+	delay = {
+		completion = 50, -- Dipercepat agar langsung muncul saat mengetik
+		info = 100,
+		signature = 50,
+	},
+	-- Ini memastikan jika LSP tidak punya saran, dia langsung lari ke kata-kata di buffer
+	fallback_action = "<C-n>",
+})
+require("mini.snippets").setup()
+require("mini.pick").setup()
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
@@ -130,102 +63,7 @@ require("conform").setup({
 		lsp_format = "fallback",
 	},
 })
---:lsp
-vim.lsp.config("lua_ls", {
-	settings = {
-		Lua = {
-			runtime = {
-				version = "LuaJIT", -- Neovim menggunakan LuaJIT
-			},
-			diagnostics = {
-				globals = { "vim" }, -- Menghilangkan error "undefined global vim"
-			},
-			workspace = {
-				-- Mengambil semua library Neovim & plugin secara otomatis
-				library = vim.api.nvim_get_runtime_file("", true),
-				checkThirdParty = false,
-			},
-			telemetry = {
-				enable = false,
-			},
-		},
-	},
-})
-vim.lsp.config("slint", {
-	cmd = { "slint-lsp" },
-})
-vim.lsp.config("nil_ls", {
-	settings = {
-		["nil"] = {
-			test = {
-				-- Mengaktifkan pengetesan ekspresi secara otomatis
-				enable = true,
-			},
-			formatting = {
-				command = { "nixfmt" },
-			},
-			nix = {
-				-- Membatasi RAM agar i3-3240 tidak sesak napas (2GB cukup)
-				maxMemoryMB = 2048,
-				flake = {
-					-- WAJIB: Agar nil otomatis membaca flake.nix di folder project
-					autoEvalInputs = true,
-					-- Nama input nixpkgs di flake.nix kamu
-					nixpkgsInputName = "nixpkgs",
-				},
-			},
-		},
-	},
-})
 
-vim.lsp.enable("lua_ls")
---vim.lsp.enable("rust_analyzer")
-vim.lsp.enable("bashls")
-vim.lsp.enable("nil_ls")
-vim.lsp.enable("slint")
-
---: diagnostic custom
-local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = "󰋽 " }
-vim.diagnostic.config({
-	virtual_text = false, -- Matikan teks di samping agar tidak berantakan
-	signs = {
-		text = {
-			[vim.diagnostic.severity.ERROR] = signs.Error,
-			[vim.diagnostic.severity.WARN] = signs.Warn,
-			[vim.diagnostic.severity.HINT] = signs.Hint,
-			[vim.diagnostic.severity.INFO] = signs.Info,
-		},
-	},
-	update_in_insert = false,
-	underline = true,
-	severity_sort = true,
-	float = {
-		focused = false,
-		style = "minimal",
-		border = "rounded",
-		source = "always",
-		header = "",
-		prefix = "",
-	},
-})
-
-vim.api.nvim_create_autocmd("CursorHold", {
-	callback = function()
-		vim.diagnostic.open_float(nil, {
-			focusable = false,
-			close_events = { "BufLeave", "CursorMoved", "InsertEnter" },
-			border = "rounded", -- Kotak rounded agar estetik
-			source = "always", -- Menampilkan sumber error (misal: rust-analyzer)
-			prefix = " ",
-		})
-	end,
-})
-vim.opt.updatetime = 300
-
---: treesitter
-vim.pack.add({
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-})
 vim.api.nvim_create_autocmd("BufWrite", {
 	callback = function()
 		-- Mencoba menjalankan treesitter, jika gagal/tidak support dilewati saja
@@ -259,23 +97,37 @@ vim.api.nvim_create_autocmd("FileType", {
 		end
 	end,
 })
-vim.pack.add({
-	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
-})
-require("ibl").setup()
 
-vim.pack.add({
-	{ src = "https://github.com/mrcjkb/rustaceanvim" },
-	{ src = "https://github.com/j-hui/fidget.nvim" },
-	{ src = "https://github.com/windwp/nvim-autopairs" },
+vim.lsp.config("lua_ls", {
+	settings = {
+		Lua = {
+			runtime = {
+				version = "LuaJIT", -- Neovim menggunakan LuaJIT
+			},
+			diagnostics = {
+				globals = { "vim" }, -- Menghilangkan error "undefined global vim"
+			},
+			workspace = {
+				-- Mengambil semua library Neovim & plugin secara otomatis
+				library = vim.api.nvim_get_runtime_file("", true),
+				checkThirdParty = false,
+			},
+			telemetry = {
+				enable = false,
+			},
+		},
+	},
 })
-require("fidget").setup({})
-require("nvim-autopairs").setup({})
---:fzf nvim
 
-vim.pack.add({
-	{ src = "https://github.com/junegunn/fzf.vim" },
-	{ src = "https://github.com/junegunn/fzf" },
+vim.lsp.config("slint", {
+	cmd = { "slint-lsp" },
 })
-keymap("n", "<leader>ff", ":Files<CR>", { desc = "fzf" })
-vim.g.fzf_layout = { down = "40%" }
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("nil_ls")
+vim.lsp.enable("slint")
+vim.opt.ignorecase = true
+-- Jika kamu mengetik huruf besar secara sengaja, baru dia jadi case sensitive
+vim.opt.smartcase = true
+-- Mengatur perilaku menu popup (pum)
+---- Konfigurasi popup menu yang lebih cerdas dan tidak mengganggu
+vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort" }
