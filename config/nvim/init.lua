@@ -1,3 +1,17 @@
+vim.o.clipboard = "unnamedplus"
+vim.opt.termguicolors = true
+vim.opt.tabstop = 4 -- Lebar visual dari sebuah karakter tab
+vim.opt.softtabstop = 4 -- Jumlah spasi yang dimasukkan saat menekan <Tab>
+vim.opt.shiftwidth = 4 -- Jumlah spasi untuk indentasi otomatis (>> atau <<)
+vim.opt.expandtab = true -- Mengubah karakter tab menjadi spasi
+vim.opt.ignorecase = true
+-- Jika kamu mengetik huruf besar secara sengaja, baru dia jadi case sensitive
+vim.opt.smartcase = true
+-- Mengatur perilaku menu popup (pum)
+---- Konfigurasi popup menu yang lebih cerdas dan tidak mengganggu
+vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort" }
+vim.opt.pumheight = 16 -- Maksimal 10 baris yang muncul di menu popup
+
 vim.g.mapleader = " "
 local map = vim.api.nvim_set_keymap
 map("i", "jk", "<Esc>", { noremap = true })
@@ -5,12 +19,7 @@ map("n", "<leader>w", ":w<CR>", { noremap = true })
 map("n", "<leader>q", ":q<CR>", { noremap = true })
 map("n", "<leader>x", ":bdel<CR>", { noremap = true })
 map("n", "<leader>ff", ":Pick files<CR>", { noremap = true })
-vim.o.clipboard = "unnamedplus"
-vim.opt.termguicolors = true
-vim.opt.tabstop = 4 -- Lebar visual dari sebuah karakter tab
-vim.opt.softtabstop = 4 -- Jumlah spasi yang dimasukkan saat menekan <Tab>
-vim.opt.shiftwidth = 4 -- Jumlah spasi untuk indentasi otomatis (>> atau <<)
-vim.opt.expandtab = true -- Mengubah karakter tab menjadi spasi
+
 vim.pack.add({
 	{ src = "https://github.com/nvim-mini/mini.nvim" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
@@ -21,6 +30,7 @@ vim.pack.add({
 	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
+
 vim.cmd("colorscheme material-darker")
 
 local status_fidget, fidget = pcall(require, "fidget")
@@ -134,10 +144,3 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 vim.lsp.enable("lua_ls")
 vim.lsp.enable("nil_ls")
-vim.opt.ignorecase = true
--- Jika kamu mengetik huruf besar secara sengaja, baru dia jadi case sensitive
-vim.opt.smartcase = true
--- Mengatur perilaku menu popup (pum)
----- Konfigurasi popup menu yang lebih cerdas dan tidak mengganggu
-vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort" }
-vim.opt.pumheight = 16 -- Maksimal 10 baris yang muncul di menu popup
