@@ -9,9 +9,8 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 -- Mengatur perilaku menu popup (pum)
 ---- Konfigurasi popup menu yang lebih cerdas dan tidak mengganggu
-vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort" }
+vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "noinsert" }
 vim.opt.pumheight = 16 -- Maksimal 10 baris yang muncul di menu popup
-
 -- 1. Definisikan Warna (Warna Material Theme)
 --
 -- 1. Warna Background (Hijau, Kuning, Merah) dengan Teks Hitam
@@ -20,7 +19,6 @@ vim.cmd([[
   highlight StatusInsert guibg=#ecbe7b guifg=#000000 gui=bold
   highlight StatusVisual guibg=#ff6c6b guifg=#000000 gui=bold
 ]])
-
 -- 2. Fungsi LSP (Jangan sampai hilang!)
 --
 local function lsp_status()
@@ -85,7 +83,6 @@ vim.pack.add({
 	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
-
 vim.cmd("colorscheme material-darker")
 
 local status_fidget, fidget = pcall(require, "fidget")
@@ -109,6 +106,7 @@ require("mini.completion").setup({
 		signature = 50,
 	},
 })
+
 require("mini.snippets").setup()
 require("mini.pick").setup()
 require("conform").setup({
@@ -187,7 +185,6 @@ vim.lsp.config("lua_ls", {
 		},
 	},
 })
-
 vim.lsp.config("nngjslint", {
 	cmd = { "slint-lsp" },
 })
@@ -216,6 +213,21 @@ vim.api.nvim_create_autocmd("CursorHold", {
 		vim.diagnostic.open_float(nil, opts)
 	end,
 })
-
 -- Mengatur durasi "hold" (defaultnya 4000ms/4 detik, kita percepat jadi 300ms)
 vim.o.updatetime = 300
+vim.api.nvim_create_autocmd("InsertCharPre", {
+	pattern = "*",
+	callback = function()
+		-- Jika karakter yang baru diketik adalah '/'
+		if vim.v.char == "/" then
+			-- Gunakan schedule agar karakter '/' terinput dulu, baru pemicu dijalankan
+			vim.schedule(function()
+				-- Cek apakah kita masih di Insert Mode (menghindari error saat cepat keluar mode)
+				if vim.api.nvim_get_mode().mode == "i" then
+					-- Simulasi menekan CTRL-X lalu CTRL-F
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-f>", true, false, true), "n", true)
+				end
+			end)
+		end
+	end,
+})

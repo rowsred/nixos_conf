@@ -51,7 +51,6 @@
 
         .{ .key = "Up", .modifiers = .{ .mod4 = true }, .action = .focus_workspace_above },
         .{ .key = "Down", .modifiers = .{ .mod4 = true }, .action = .focus_workspace_below },
-        .{ .key = "Tab", .modifiers = .{ .mod4 = true }, .action = .focus_workspace_previous },
 
         .{ .key = "1", .modifiers = .{ .mod4 = true }, .action = .{ .focus_workspace_number = 1 } },
         .{ .key = "2", .modifiers = .{ .mod4 = true }, .action = .{ .focus_workspace_number = 2 } },
