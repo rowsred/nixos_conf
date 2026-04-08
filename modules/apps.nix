@@ -24,6 +24,9 @@ in
         unstable.fuzzel
         btop
         ripgrep
+        tree
+        git
+        vim
         fd
         rustup
         gnumake
