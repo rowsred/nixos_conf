@@ -4,7 +4,7 @@
 # Description: just for hoby
 { ... }:
 {
-  flake.nixosModules.nixos = {
+  flake.modules.nixos.nixos = {
     networking.networkmanager.enable = true;
     environment.etc."gtk-3.0/settings.ini".text = ''
       [Settings]

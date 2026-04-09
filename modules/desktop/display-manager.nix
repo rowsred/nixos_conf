@@ -4,7 +4,7 @@
 # Description: just for hoby
 { ... }:
 {
-  flake.nixosModules.ly = {
+  flake.modules.nixos.ly = {
     services.displayManager.ly.enable = true;
   };
 }

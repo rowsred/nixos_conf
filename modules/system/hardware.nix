@@ -4,7 +4,7 @@
 # Description: just for hoby
 { ... }:
 {
-  flake.nixosModules.hardware = {
+  flake.modules.nixos.hardware = {
     imports = [
       /etc/nixos/hardware-configuration.nix
     ];

@@ -7,5 +7,5 @@ os:
 test:
 	sudo nixos-rebuild test --flake --impure
 home:
-	nix run home-manager/master -- switch --flake .
+	nix run home-manager/master -- switch --impure --flake .
 

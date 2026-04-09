@@ -4,7 +4,7 @@
 # Description: just for hoby
 { inputs, ... }:
 {
-  flake.nixosModules.settingsNix = {
+  flake.modules.nixos.nix-settings = {
 
     nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
     nix.settings.trusted-users = [

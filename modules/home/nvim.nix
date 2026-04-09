@@ -3,23 +3,20 @@
 # Date: 2026-04-08
 # Description: just for hoby
 
-{ inputs, pkgs, ... }:
+{ inputs, ... }:
 let
   unstable = import inputs.nixpkgs-unstable {
 
   };
 in
 {
-  flake.nixosModules.nvim =
+  flake.modules.homeManager.nvim =
     { pkgs, ... }:
     {
-      environment.systemPackages = [
+      home.packages = [
         inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
-        unstable.rust-analyzer
         unstable.wl-clipboard-rs
         unstable.nil
-        pkgs.clippy
-        pkgs.rustfmt
         pkgs.nixfmt
         pkgs.slint-lsp
         pkgs.clang-tools
@@ -30,5 +27,4 @@ in
 
       ];
     };
-
 }

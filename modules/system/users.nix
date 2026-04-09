@@ -4,7 +4,7 @@
 # Description: just for hoby
 { ... }:
 {
-  flake.nixosModules.users = {
+  flake.modules.nixos.users = {
 
     users.users.row = {
       isNormalUser = true;

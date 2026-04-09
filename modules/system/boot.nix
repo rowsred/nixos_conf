@@ -4,7 +4,8 @@
 # Description: just for hoby
 { ... }:
 {
-  flake.nixosModules.boot =
+
+  flake.modules.nixos.boot =
     { pkgs, ... }:
     {
 
