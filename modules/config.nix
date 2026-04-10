@@ -36,7 +36,7 @@ in
   configurations.home.row.module = {
     imports = [
       home-mods.shell-settings
-      home-mods.dev-apps
+     # home-mods.dev-apps
       home-mods.nvim
       home-mods.git-settings
       {
