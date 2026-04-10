@@ -4,7 +4,6 @@
 # Description: just for hoby
 { inputs, ... }:
 {
-
   flake.modules.nixos.rill = {
     imports = [
       inputs.rill.nixosModules.default

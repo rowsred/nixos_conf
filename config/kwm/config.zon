@@ -147,7 +147,7 @@
             .master_location = .left,
         },
         .scroller = .{
-            .mfact = 0.5,
+            .mfact = 1,
             .inner_gap = 16,
             .outer_gap = 9,
         },

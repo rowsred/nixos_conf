@@ -22,6 +22,7 @@ in
       nixos-mods.hardware-h61
       nixos-mods.boot
       nixos-mods.rill
+      #nixos-mods.kwm
       nixos-mods.nixos
       nixos-mods.users
       nixos-mods.ly
