@@ -12,7 +12,6 @@
         git
         vim
         gnumake
-        starship
         kitty
       ];
     };
