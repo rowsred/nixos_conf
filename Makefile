@@ -9,3 +9,6 @@ test:
 home:
 	nix run home-manager/master -- switch --flake .
 
+unhome:
+	nix run home-manager/master -- uninstall
+

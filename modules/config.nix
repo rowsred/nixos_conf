@@ -18,15 +18,18 @@ in
 
     specialArgs = { inherit inputs; };
     modules = [
-      nixos-mods.hardware-h61
-      nixos-mods.boot
-      nixos-mods.users
-      nixos-mods.nix-settings
-      nixos-mods.nixos
-      nixos-mods.ly
-      nixos-mods.rill
-      #nixos-mods.kwm
-      nixos-mods.system-apps
+      nixos-mods.Hardware-h61
+#      nixos-mods.Flake-parts
+      nixos-mods.Boot
+      nixos-mods.Users
+      nixos-mods.Nix-settings
+      nixos-mods.System-apps
+      nixos-mods.State-version
+      nixos-mods.Network
+      nixos-mods.Window-manager
+      nixos-mods.Display-manager
+      nixos-mods.Apps-launcher
+      nixos-mods.Default-browser
       {
         nixpkgs.hostPlatform = "x86_64-linux";
       }
@@ -35,10 +38,9 @@ in
 
   configurations.home.row.module = {
     imports = [
-      home-mods.shell-settings
-     # home-mods.dev-apps
-      home-mods.nvim
-      home-mods.git-settings
+      home-mods.Shell
+      home-mods.Nvim
+      home-mods.Git
       {
         home = {
           username = "row";
