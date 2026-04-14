@@ -4,7 +4,7 @@
 # Description: just for hoby
 { inputs, ... }:
 {
-  flake.modules.nixos.default-browser =
+  flake.modules.nixos.google-chrome =
     { pkgs, ... }:
     let
       unstable = import inputs.nixpkgs-unstable {

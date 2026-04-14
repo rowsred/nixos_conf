@@ -1,16 +1,12 @@
-# File: nix-settings.nix
+# File: features-flake.nix
 # Author: rowsred
-# Date: 2026-04-11
+# Date: 2026-04-12
 # Description: just for hoby
 { ... }:
 {
-  flake.modules.nixos.nix-settings =
+  flake.modules.nixos.features-flake =
     { ... }:
     {
-      nix.settings.trusted-users = [
-        "root"
-        "row"
-      ];
       nix.settings.experimental-features = [
         "nix-command"
         "flakes"

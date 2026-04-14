@@ -1,7 +1,8 @@
-# File: options.nix
+# File: nixos-options.nix
 # Author: rowsred
-# Date: 2026-04-11
+# Date: 2026-04-14
 # Description: just for hoby
+
 {
   inputs,
   lib,

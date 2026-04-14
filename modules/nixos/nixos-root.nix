@@ -1,10 +1,9 @@
-# File: default.nix
+# File: nixos-root.nix
 # Author: rowsred
-# Date: 2026-04-08
+# Date: 2026-04-14
 # Description: just for hoby
 
 {
-  self,
   inputs,
   config,
   ...
@@ -12,7 +11,6 @@
 let
   inherit (config.flake.modules) nixos;
   inherit (config.flake.modules) homeManager;
-
 in
 {
   imports = [
@@ -21,17 +19,7 @@ in
   ];
   configurations.nixos.nixos.module = {
     imports = [
-      nixos.hardware-h61
-      nixos.boot
-      nixos.users
-      nixos.nix-settings
-      nixos.system-apps
-      nixos.state-version
-      nixos.network
-      nixos.window-manager
-      nixos.display-manager
-      nixos.apps-launcher
-      nixos.default-browser
+      nixos.system-root
       {
         nixpkgs.hostPlatform = "x86_64-linux";
       }
