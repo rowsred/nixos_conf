@@ -68,6 +68,7 @@ vim.g.mapleader = " "
 local map = vim.api.nvim_set_keymap
 map("i", "jk", "<Esc>", { noremap = true })
 map("n", "<leader>w", ":w<CR>", { noremap = true })
+map("n", "<leader>e", ":Ex<CR>", { noremap = true })
 map("n", "<leader>nh", ":nohl<CR>", { noremap = true })
 map("n", "<leader>q", ":q<CR>", { noremap = true })
 map("n", "<leader>x", ":bdel<CR>", { noremap = true })
