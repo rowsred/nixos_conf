@@ -7,9 +7,15 @@ A minimal and organized NixOS setup using **flake-parts** and the **Dendritic Pa
 tree modules/
 modules/
 ├── home
-│   ├── git-settings.nix
-│   ├── neovim.nix
-│   └── shell-settings.nix
+│   ├── code-editor
+│   │   ├── code-editor-group.nix
+│   │   └── neovim.nix
+│   ├── dev
+│   │   ├── dev-group.nix
+│   │   ├── git-settings.nix
+│   │   └── shell-settings.nix
+│   ├── dotfiles-manager.nix
+│   └── home-root.nix
 ├── nixos
 │   ├── nixos-options.nix
 │   └── nixos-root.nix
@@ -30,6 +36,7 @@ modules/
     │   │   ├── browser
     │   │   │   ├── browser-group.nix
     │   │   │   └── google-chrome.nix
+    │   │   ├── podman.nix
     │   │   └── system-apps.nix
     │   ├── desktop-group.nix
     │   ├── display-manager.nix
@@ -42,6 +49,4 @@ modules/
     │   ├── network.nix
     │   └── services-group.nix
     └── system-root.nix
-
-12 directories, 25 files
 ```
