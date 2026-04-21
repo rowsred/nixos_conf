@@ -8,6 +8,7 @@
     imports = [
       config.flake.modules.homeManager.git-settings
       config.flake.modules.homeManager.shell-settings
+      config.flake.modules.homeManager.zellij
     ];
   };
 }

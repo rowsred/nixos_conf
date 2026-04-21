@@ -32,7 +32,6 @@
           ls = "ls --color=auto";
           phost = "podman run -it --name cleanhost --hostname podclean -v ${inputs.self}/src/podman/bashrc-podman.bash:/root/.bashrc -v $(pwd):/work -w /work -v $HOME/.config/nvim:/root/.config/nvim -v $HOME/.local/share/nvim:/root/.local/share/nvim --rm docker.io/nixos/nix
           ";
-          zellij = "bash <(curl -L https://zellij.dev/launch)";
         };
 
         initExtra = ''
