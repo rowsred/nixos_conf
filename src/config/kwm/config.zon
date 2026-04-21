@@ -934,7 +934,7 @@
                 .event = .{
                     .click = .{
                         .pressed = .{
-                            .spawn_shell = .{ .cmd = "wmenu-run" },
+                            .spawn_shell = .{ .cmd = "fuzzel" },
                         },
                     },
                 },

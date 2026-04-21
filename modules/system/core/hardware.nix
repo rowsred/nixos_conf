@@ -15,6 +15,7 @@
     }:
 
     {
+
       imports = [
         (modulesPath + "/installer/scan/not-detected.nix")
       ];
@@ -28,12 +29,12 @@
         "sd_mod"
       ];
       boot.initrd.kernelModules = [ ];
-      boot.kernelModules = [ "kvm-intel" ];
+      boot.kernelModules = [ ];
       boot.extraModulePackages = [ ];
 
       fileSystems."/" = {
-        device = "/dev/disk/by-uuid/91f618d6-c7f3-491a-9b28-1f92497cc943";
-        fsType = "ext4";
+        device = "/dev/disk/by-uuid/938ecd32-6857-42b8-bc73-59dcfe411844";
+        fsType = "f2fs";
       };
 
       fileSystems."/boot/efi" = {
