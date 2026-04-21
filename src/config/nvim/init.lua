@@ -245,7 +245,7 @@ vim.api.nvim_create_autocmd("FileType", {
 				"# File: " .. filename,
 				"# Author: rowsred",
 				"# Date: " .. date,
-				"# Description: ", -- Dikosongkan agar kursor mendarat di sini
+				"# Descriptions: ", -- Dikosongkan agar kursor mendarat di sini
 				"",
 			}
 

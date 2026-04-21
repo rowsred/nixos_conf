@@ -3,11 +3,11 @@
 def:
 
 os:
-	sudo nixos-rebuild switch --flake .
+	nix run nixpkgs#nh os switch .
 test:
 	sudo nixos-rebuild test --flake .
 home:
-	nix run home-manager/master -- switch --flake .
+	nix run nixpkgs#nh home switch .
 
 unhome:
 	nix run home-manager/master -- uninstall
