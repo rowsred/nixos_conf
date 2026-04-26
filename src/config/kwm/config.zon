@@ -12,22 +12,25 @@
         // .{ "swaybg", "-i", "/path/to/wallpaper" },
     },
 
-    // .none
+    // null
     // or
-    // .theme = .{ .name = []const u8, .size = u32 }
-    .xcursor_theme = .none,
+    // .{ .name = []const u8, .size = u32 }
+    .xcursor_theme = null,
 
+    // ?u32
     // solid color background
-    // note: set this to .none if you use other wallpaper program like `swaybg`, orelse it will be covered by this and unable to see
-    .background = .{ .color = 0x33000000 },
+    // note: set this to null if you use other wallpaper program like `swaybg`, orelse it will be covered by this and unable to see
+    .background = 0x33000000,
 
     .bar = .{
         .show_default = true,
         // .top
         // .bottom
         .position = .top,
+
         .font = "monospace:size=10",
-        .color = .{
+
+        .scheme = .{
             .normal = .{
                 .fg = 0x828bb8ff,
                 .bg = 0x1b1d2bd0,
@@ -37,30 +40,118 @@
                 .bg = 0xc8d3f5d0,
             },
         },
-        .status = .{ .text = "^#ff0000ffk^#00ff00ffw^#0000ffffm" }, // .stdin or .{ .fifo = "fifo file path" }, could use ^#RGBA to switch text color, and use ^#! to switch back to default color
-        // bar clicked callback
-        // each part supports left/right/middle/side/extra/forward/back/task
-        // set .none to disable
-        .click = .{
-            .tags = .{
+
+        // set null to disable tags part
+        .tags = .{
+            // tags show on bar
+            .tags = .{ "1", "2", "3", "4", "5", "6", "7", "8", "9" },
+
+            // click callback
+            // each part supports left/right/middle/side/extra/forward/back/task
+            // set null to disable
+            .click = .{
                 // could use 0 there because it will be replace with the tag clicked
-                .left = .{ .action = .{ .set_output_tag = .{ .tag = .{ .tag = 0 } } } },
-                .right = .{ .action = .{ .toggle_output_tag = .{ .mask = 0 } } },
-                .middle = .{ .action = .{ .toggle_window_tag = .{ .mask = 0 } } },
-            },
-            .layout = .{
-                .left = .{ .action = .switch_to_previous_layout },
-            },
-            .mode = .{
-                .left = .{ .action = .{ .switch_mode = .{ .mode = "default" } } },
-            },
-            .title = .{
-                .left = .{ .action = .{ .zoom = .{ .swap = false } } },
-            },
-            .status = .{
-                .middle = .{ .action = .{ .spawn = .{ .argv = .{ "foot" } } } },
+                .left = .{ .set_output_tag = .{ .tag = .{ .tag = 0 } } },
+                .right = .{ .toggle_output_tag = .{ .mask = 0 } },
+                .middle = .{ .toggle_window_tag = .{ .mask = 0 } },
             },
         },
+        // set null to disable mode part
+        .mode = .{
+            // mode tags show on bar
+            // display full mode string by default
+            .tags = .{
+                .{ "default", "" },         // hide mode tag in default mode
+                .{ "passthrough", "P" },    // only show "P" on bar in passthrough mode
+                .{ "floating", "F" },       // only show "F" on bar in floating mode
+            },
+
+            .click = .{
+                .left = .{ .switch_mode = .{ .mode = "default" } },
+            },
+        },
+        // set null to disable layout part
+        .layout = .{
+            // layout tags show on bar
+            // {{?}} will be replaced with managed window count, when the count is 0, `?` will be used as replacement.
+            // e.g. [{{{=}}], when managed window count > 0, [N] will be showed, else [=] will be showed
+            .tags = .{
+                .tile = .{
+                    .left = "[]=",
+                    .right = "=[]",
+                    .top = "[^]",
+                    .bottom = "[_]",
+                },
+                .grid = .{
+                    .horizontal = "|+|",
+                    .vertical = "|||",
+                },
+                .monocle = "[{{=}}]",
+                .deck = .{
+                    .left = "[{{D}}]=",
+                    .right = "=[{{D}}]",
+                    .top = "[{{D}}^]",
+                    .bottom = "[{{D}}_]",
+                },
+                .scroller = "[==]",
+                .float = "><>",
+            },
+
+            .click = .{
+                .left = .switch_to_previous_layout,
+            },
+        },
+        // set null to disable title part
+        .title = .{
+            .click = .{
+                .left = .{ .zoom = .{ .swap = false } },
+            },
+        },
+        // set null to disable status part
+        .status = .{
+            .data = .{ .text = "^#ff0000ffk^#00ff00ffw^#0000ffffm" }, // .stdin or .{ .fifo = "fifo file path" }, could use ^#RGBA to switch text color, and use ^#! to switch back to default color
+
+            .click = .{
+                .middle = .{ .spawn = .{ .argv = .{ "foot" } } },
+            },
+        },
+
+        // override colors
+        .override_colors = .{
+            // areas:
+            //      .tags
+            //      .{ .mode = "floating" or other modes }, null will match all mode
+            //      .{ layout = .tile or other layout }, null will match all layouts
+            //      .title
+            //      .status
+            //
+            // scheme is a struct, no need to specify all fields:
+            //      .{
+            //          .normal = .{
+            //              .fg = u32,
+            //              .bg = u32,
+            //          },
+            //          .select = .{
+            //              .fg = u32,
+            //              .bg = u32,
+            //          }
+            //      }
+            //
+            // mode, layout and status will only use the `normal` color
+            // tags and title will use both `normal` and `select` color
+            //
+
+            // set scheme for mode tag
+            .{
+                .area = .{ .mode = null },
+                .scheme = .{
+                    .normal = .{
+                        .fg = 0x444a73ff,
+                        .bg = 0xc8d3f5d0,
+                    }
+                }
+            },
+        }
     },
 
     .sloppy_focus = false,
@@ -106,16 +197,13 @@
         },
     },
 
-    // tags show on bar
-    .tags = .{ "1", "2", "3", "4", "5", "6", "7", "8", "9" },
-
     // .tile
     // .grid
     // .monocle
     // .deck
     // .scroller
     // .float
-    .default_layout = .scroller,
+    .default_layout = .tile,
     .layout = .{
         .tile = .{
             .nmaster = 1,
@@ -151,35 +239,10 @@
             .master_location = .left,
         },
         .scroller = .{
-            .mfact = 0.9,
+            .mfact = 0.5,
             .inner_gap = 16,
             .outer_gap = 9,
         },
-    },
-
-    // layout tags show on bar
-    // {{?}} will be replaced with managed window count, when the count is 0, `?` will be used as replacement.
-    // e.g. [{{{=}}], when managed window count > 0, [N] will be showed, else [=] will be showed
-    .layout_tag = .{
-        .tile = .{
-            .left = "[]=",
-            .right = "=[]",
-            .top = "[^]",
-            .bottom = "[_]",
-        },
-        .grid = .{
-            .horizontal = "|+|",
-            .vertical = "|||",
-        },
-        .monocle = "[{{=}}]",
-        .deck = .{
-            .left = "[{{D}}]=",
-            .right = "=[{{D}}]",
-            .top = "[{{D}}^]",
-            .bottom = "[{{D}}_]",
-        },
-        .scroller = "[==]",
-        .float = "><>",
     },
 
     // key/pointer bindings
@@ -188,14 +251,6 @@
         .repeat_info = .{
             .rate = 50,
             .delay = 300,
-        },
-
-        // mode tags show on bar
-        // display full mode string by default
-        .mode_tag = .{
-            .{ "default", "" },         // hide mode tag in default mode
-            .{ "passthrough", "P" },    // only show "P" on bar in passthrough mode
-            .{ "floating", "F" },       // only show "F" on bar in floating mode
         },
 
         // list of key bindings
@@ -408,7 +463,13 @@
                 .event = .{
                     .click = .{
                         .pressed = .{
-                            .quit = .{ .exit_session = true },
+                            .quit = .{
+                                .exit_session = true,
+                                // command to run before quit
+                                // will quit only when the process exit with zero status
+                                // e.g. .{ "sh", "-c", "~/cleanup.sh" }
+                                .hook = null,
+                            },
                         },
                     },
                 },
@@ -787,6 +848,7 @@
             .{ .keysym = "7", .modifiers = .{ .mod4 = true, .shift = true }, .event = .{ .click = .{ .pressed = .{ .set_window_tag = .{ .tag = .{ .tag = 0b1000000 } } } } } },
             .{ .keysym = "8", .modifiers = .{ .mod4 = true, .shift = true }, .event = .{ .click = .{ .pressed = .{ .set_window_tag = .{ .tag = .{ .tag = 0b10000000 } } } } } },
             .{ .keysym = "9", .modifiers = .{ .mod4 = true, .shift = true }, .event = .{ .click = .{ .pressed = .{ .set_window_tag = .{ .tag = .{ .tag = 0b100000000 } } } } } },
+            .{ .keysym = "0", .modifiers = .{ .mod4 = true, .shift = true }, .event = .{ .click = .{ .pressed = .{ .set_window_tag = .{ .tag = .{ .tag = 0b111111111 } } } } } },
 
             .{ .keysym = "1", .modifiers = .{ .mod4 = true, .ctrl = true, .shift = true }, .event = .{ .click = .{ .pressed = .{ .toggle_window_tag = .{ .mask = 0b1 } } } } },
             .{ .keysym = "2", .modifiers = .{ .mod4 = true, .ctrl = true, .shift = true }, .event = .{ .click = .{ .pressed = .{ .toggle_window_tag = .{ .mask = 0b10 } } } } },
@@ -804,8 +866,7 @@
                 .event = .{
                     .click = .{
                         .pressed = .{
-
-                            .focus_iter = .{ .direction = .forward },
+                            .modify_mfact = .{ .change = .{ .step = 0.01 } },
                         },
                     },
                 },
@@ -816,7 +877,7 @@
                 .event = .{
                     .click = .{
                         .pressed = .{
-                            .focus_iter = .{ .direction = .reverse},
+                            .modify_mfact = .{ .change = .{ .step = -0.01 } },
                         },
                     },
                 },
@@ -934,7 +995,7 @@
                 .event = .{
                     .click = .{
                         .pressed = .{
-                            .spawn_shell = .{ .cmd = "fuzzel" },
+                            .spawn_shell = .{ .cmd = "wmenu-run" },
                         },
                     },
                 },
@@ -1041,8 +1102,9 @@
         //
     },
 
-    // NOTE: do not delete next line if you are compiling kwm
-    // @if(kewuaa=super_hansome)
+    // NOTE: configuration below is used for kwim
+    //       without `@if(kwim)` would cause compile error during compile kwm
+    // @if(kwim)
     // input device rules
     // full scheme:
     //      name: rule pattern
