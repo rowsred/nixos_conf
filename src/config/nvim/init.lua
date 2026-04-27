@@ -1,47 +1,45 @@
-vim.o.clipboard = "unnamedplus"
-vim.opt.termguicolors = true
-vim.opt.tabstop = 4 -- Lebar visual dari sebuah karakter tab
-vim.opt.softtabstop = 4 -- Jumlah spasi yang dimasukkan saat menekan <Tab>
-vim.opt.shiftwidth = 4 -- Jumlah spasi untuk indentasi otomatis (>> atau <<)
-vim.opt.expandtab = true -- Mengubah karakter tab menjadi spasi
-vim.opt.ignorecase = true
--- Jika kamu mengetik huruf besar secara sengaja, baru dia jadi case sensitive
-vim.opt.smartcase = true
-vim.opt.colorcolumn = "80"
--- Mengatur perilaku menu popup (pum)
----- Konfigurasi popup menu yang lebih cerdas dan tidak mengganggu
-vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "noinsert" }
-vim.opt.pumheight = 16 -- Maksimal 10 baris yang muncul di menu popup
--- 1. Definisikan Warna (Warna Material Theme)
---
--- 1. Warna Background (Hijau, Kuning, Merah) dengan Teks Hitam
+-- File name: init.lua
+-- Author: rowsred
+-- Date created: 2026-04-27 00:55:25
+-- Date modified: 2026-04-27 00:55:59
+-- ------
+vim.env.CC = "gcc"
+vim.api.nvim_create_user_command("E", function()
+	vim.cmd("edit $MYVIMRC")
+end, { desc = "Buka konfigurasi Neovim" })
+--: OPTIONS
+local o = vim.opt
+o.clipboard = "unnamedplus"
+o.termguicolors = true
+o.tabstop = 4
+o.softtabstop = 4
+o.shiftwidth = 4
+o.expandtab = true
+o.ignorecase = true
+o.smartcase = true
+o.colorcolumn = "80"
+o.completeopt = { "menuone", "noselect", "fuzzy", "nosort", "noinsert" }
+o.pumheight = 16
+--: STATUSLINE
 vim.cmd([[
   highlight StatusNormal guibg=#98be65 guifg=#000000 gui=bold
   highlight StatusInsert guibg=#ecbe7b guifg=#000000 gui=bold
   highlight StatusVisual guibg=#ff6c6b guifg=#000000 gui=bold
 ]])
--- 2. Fungsi LSP (Jangan sampai hilang!)
---
 local function lsp_status()
 	local clients = vim.lsp.get_clients({ bufnr = 0 })
 	if #clients == 0 then
 		return ""
 	end
-
 	local names = {}
 	for _, client in ipairs(clients) do
 		table.insert(names, client.name)
 	end
-
-	-- Menghasilkan output: "enable lsp: nngjslint, rust-analyzer"
 	return "enable lsp: " .. table.concat(names, ", ")
 end
--- 3. Fungsi Utama Statusline
 function MyStatus()
 	local m = vim.api.nvim_get_mode().mode
 	local mode_char = string.upper(m:sub(1, 1))
-
-	-- Map highlight berdasarkan mode
 	local hl_map = {
 		n = "%#StatusNormal#",
 		i = "%#StatusInsert#",
@@ -50,21 +48,21 @@ function MyStatus()
 		[""] = "%#StatusVisual#",
 	}
 	local hl = hl_map[m] or "%#StatusNormal#"
-
 	return table.concat({
 		hl,
 		" ",
 		mode_char,
-		" ", -- Kotak warna background & teks hitam
-		"%#StatusLine# | ", -- Kembali ke warna standar & pemisah
-		"%F %m", -- Nama File & [+]
-		"%=", -- Dorong ke kanan
-		lsp_status(), -- Panggil fungsi LSP di sini
-		" | %l:%c ", -- Lokasi Baris:Kolom
+		" ",
+		"%#StatusLine# | ",
+		"%F %m",
+		"%=",
+		lsp_status(),
+		" | %l:%c ",
 	})
 end
+o.statusline = "%!v:lua.MyStatus()"
 
-vim.opt.statusline = "%!v:lua.MyStatus()"
+--: KEYMAP
 vim.g.mapleader = " "
 local map = vim.api.nvim_set_keymap
 map("i", "jk", "<Esc>", { noremap = true })
@@ -72,26 +70,66 @@ map("n", "<leader>w", ":w<CR>", { noremap = true })
 map("n", "<leader>e", ":Ex<CR>", { noremap = true })
 map("n", "<leader>nh", ":nohl<CR>", { noremap = true })
 map("n", "<leader>q", ":q<CR>", { noremap = true })
-map("n", "<leader>x", ":bdel<CR>", { noremap = true })
+map("n", "<leader>c", ":bdel<CR>", { noremap = true })
+map("n", "<leader>x", ":bp<CR>", { noremap = true })
 map("n", "<leader>ff", ":Pick files<CR>", { noremap = true })
+--:CUSTOM HEADER
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {
+		"nix",
+		"python",
+		"sh",
+		"bash",
+		"toml",
+		"yaml",
+		"dockerfile",
+		"php",
+		"conf",
+	},
+	callback = function()
+		vim.keymap.set("n", "<leader>hh", function()
+			local filename = vim.fn.expand("%:t")
+			local date = os.date("%Y-%m-%d")
+			local header = {
+				"# File: " .. filename,
+				"# Author: rowsred",
+				"# Date: " .. date,
+				"# Descriptions: ", -- Kursor akan mendarat di sini
+				"",
+			}
+			-- Memasukkan baris di paling atas
+			vim.api.nvim_buf_set_lines(0, 0, 0, false, header)
 
+			-- Pindahkan kursor ke baris ke-4 (setelah 'Descriptions: ')
+			-- Angka 16 adalah posisi kolom setelah spasi terakhir
+			vim.api.nvim_win_set_cursor(0, { 4, 16 })
+		end, { buffer = true, desc = "Insert Hash Header" })
+	end,
+}) -- Perhatikan di sini: tadinya Anda punya kelebihan '}'
+--: COLORSCHEME
 vim.pack.add({
-	{ src = "https://github.com/nvim-mini/mini.nvim" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/j-hui/fidget.nvim" },
-	{ src = "https://github.com/stevearc/conform.nvim" },
-	{ src = "https://github.com/mrcjkb/rustaceanvim" },
 	{ src = "https://github.com/marko-cerovac/material.nvim" },
-	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 })
 vim.cmd("colorscheme material-darker")
 
+--: FIDGET
+vim.pack.add({
+	{ src = "https://github.com/j-hui/fidget.nvim" },
+})
 local status_fidget, fidget = pcall(require, "fidget")
 if status_fidget then
 	fidget.setup({})
 end
+
+--: CODE LINE
+vim.pack.add({
+	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
+})
 require("ibl").setup()
+--: MINI
+vim.pack.add({
+	{ src = "https://github.com/nvim-mini/mini.nvim" },
+})
 require("mini.basics").setup()
 require("mini.icons").setup()
 require("mini.pairs").setup()
@@ -108,9 +146,13 @@ require("mini.completion").setup({
 		signature = 50,
 	},
 })
-
 require("mini.snippets").setup()
 require("mini.pick").setup()
+
+--: FORMATTER
+vim.pack.add({
+	{ src = "https://github.com/stevearc/conform.nvim" },
+})
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
@@ -132,40 +174,10 @@ require("conform").setup({
 	},
 })
 
-vim.api.nvim_create_autocmd("BufWrite", {
-	callback = function()
-		-- Mencoba menjalankan treesitter, jika gagal/tidak support dilewati saja
-		pcall(vim.treesitter.start)
-	end,
+--: LSP CONFIG
+vim.pack.add({
+	{ src = "https://github.com/neovim/nvim-lspconfig" },
 })
---auto install tree siter
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "*",
-	callback = function()
-		local ftype = vim.bo.filetype
-		if ftype == "" or vim.bo.buftype ~= "" then
-			return
-		end
-
-		-- 1. Gunakan mapping internal Neovim (dosini otomatis jadi ini)
-		local lang = vim.treesitter.language.get_lang(ftype) or ftype
-
-		-- 2. Cek fisik: Apakah parser sudah ada di disk?
-		-- Jika sudah ada, jangan panggil install agar tidak muncul error override
-		local parser_exists = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) > 0
-
-		if not parser_exists then
-			-- 3. Jalankan asinkron agar tidak mengunci buffer saat :w
-			vim.schedule(function()
-				pcall(function()
-					-- Gunakan 'silent!' agar tidak ada popup yang mengganggu
-					vim.cmd("silent! TSInstall " .. lang)
-				end)
-			end)
-		end
-	end,
-})
-
 vim.lsp.config("lua_ls", {
 	settings = {
 		Lua = {
@@ -233,31 +245,8 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
 		end
 	end,
 })
+
 vim.pack.add({ { src = "https://github.com/attilarepka/header.nvim" } })
-
--- Keybinding: <leader>nh (Nix Header)
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "nix",
-	callback = function()
-		vim.keymap.set("n", "<leader>hh", function()
-			local filename = vim.fn.expand("%:t")
-			local date = os.date("%Y-%m-%d")
-			local header = {
-				"# File: " .. filename,
-				"# Author: rowsred",
-				"# Date: " .. date,
-				"# Descriptions: ", -- Dikosongkan agar kursor mendarat di sini
-				"",
-			}
-
-			-- Memasukkan baris di paling atas
-			vim.api.nvim_buf_set_lines(0, 0, 0, false, header)
-
-			-- Pindahkan kursor ke baris ke-4, kolom ke-15 (setelah 'Description: ')
-			vim.api.nvim_win_set_cursor(0, { 4, 15 })
-		end, { buffer = true, desc = "Insert Nix file header" })
-	end,
-})
 require("header").setup({
 	allow_autocmds = true,
 	file_name = true,
@@ -270,4 +259,22 @@ require("header").setup({
 	use_block_header = false,
 	license_from_file = false,
 	author_from_git = false,
+})
+--: RUST
+vim.pack.add({
+	{ src = "https://github.com/mrcjkb/rustaceanvim" },
+})
+-- TREESTITER
+vim.pack.add({
+	{ src = "https://github.com/romus204/tree-sitter-manager.nvim" },
+})
+require("tree-sitter-manager").setup({
+	-- Default Options
+	-- ensure_installed = {}, -- list of parsers to install at the start of a neovim session
+	border = rounded, -- border style for the window (e.g. "rounded", "single"), if nil, use the default border style defined by 'vim.o.winborder'. See :h 'winborder' for more info.
+	auto_install = true, -- if enabled, install missing parsers when editing a new file
+	highlight = true, -- treesitter highlighting is enabled by default
+	-- languages = {}, -- override or add new parser sources
+	-- parser_dir = vim.fn.stdpath("data") .. "/site/parser",
+	-- query_dir = vim.fn.stdpath("data") .. "/site/queries",
 })
