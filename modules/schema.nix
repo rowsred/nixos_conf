@@ -1,7 +1,7 @@
-# File: nixos-options.nix
+# File: schema.nix
 # Author: rowsred
-# Date: 2026-04-14
-# Description: just for hoby
+# Date: 2026-04-30
+# Descriptions:
 
 {
   inputs,

@@ -4,7 +4,18 @@
 # Description: just for hoby
 
 { config, ... }:
+let
+  inherit (config.flake.modules) nixos;
+in
 {
+  configurations.nixos.nixos.module = {
+    imports = [
+      nixos.system-root
+      {
+        nixpkgs.hostPlatform = "x86_64-linux";
+      }
+    ];
+  };
   flake.modules.nixos.system-root = {
     imports = [
       config.flake.modules.nixos.core-group
