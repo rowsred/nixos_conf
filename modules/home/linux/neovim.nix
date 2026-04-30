@@ -1,10 +1,10 @@
 # File: neovim.nix
 # Author: rowsred
-# Date: 2026-04-11
-# Description: just for hoby
+# Date: 2026-04-29
+# Descriptions:
 { inputs, ... }:
 {
-  flake.modules.homeManager.neovim =
+  flake.homeModules.neovim =
     { pkgs, ... }:
     let
       unstable = import inputs.nixpkgs-unstable {
@@ -13,7 +13,7 @@
     in
     {
       home.packages = [
-        inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default
+        unstable.neovim
         unstable.wl-clipboard-rs
         unstable.tree-sitter
         unstable.nil

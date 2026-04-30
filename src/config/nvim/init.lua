@@ -3,7 +3,7 @@
 -- Date created: 2026-04-27 00:55:25
 -- Date modified: 2026-04-27 00:55:59
 -- ------
-vim.env.CC = "gcc"
+vim.env.CC = "clang"
 vim.api.nvim_create_user_command("E", function()
 	vim.cmd("edit $MYVIMRC")
 end, { desc = "Buka konfigurasi Neovim" })

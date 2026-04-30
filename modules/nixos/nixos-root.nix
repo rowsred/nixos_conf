@@ -10,7 +10,6 @@
 }:
 let
   inherit (config.flake.modules) nixos;
-  inherit (config.flake.modules) homeManager;
 in
 {
   imports = [
@@ -22,28 +21,6 @@ in
       nixos.system-root
       {
         nixpkgs.hostPlatform = "x86_64-linux";
-      }
-    ];
-  };
-
-  configurations.nixos.red-host.module = {
-    imports = [
-      nixos.system-root
-      {
-        nixpkgs.hostPlatform = "x86_64-linux";
-      }
-    ];
-  };
-
-  configurations.home.row.module = {
-    imports = [
-      homeManager.home-root
-      {
-        home = {
-          username = "row";
-          homeDirectory = "/home/row";
-          stateVersion = "25.11";
-        };
       }
     ];
   };
