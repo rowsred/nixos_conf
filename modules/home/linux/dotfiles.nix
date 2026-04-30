@@ -1,11 +1,7 @@
-
-
-
-
-
-
-
-
+# File: dotfiles.nix
+# Author: rowsred
+# Date: 2026-04-30
+# Descriptions:
 
 { inputs, ... }:
 {

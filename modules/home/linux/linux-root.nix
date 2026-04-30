@@ -11,6 +11,7 @@
       config.flake.homeModules.dotfiles-manager
       config.flake.homeModules.git
       config.flake.homeModules.starship
+      config.flake.homeModules.packages
       {
         home = {
           username = "dev";
