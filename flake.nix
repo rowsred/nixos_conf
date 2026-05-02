@@ -5,14 +5,6 @@
 
 {
   description = "Description for the project";
-  nixConfig = {
-    trusted-substituters = [
-      "https://nix-community.cachix.org"
-      "https://noctalia.cachix.org"
-      "https://cache.nixos.org"
-    ];
-  };
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";

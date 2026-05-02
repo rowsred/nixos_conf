@@ -1,20 +1,79 @@
 #!/usr/bin/env bash
 
-# Mendefinisikan path sumber (relatif terhadap posisi skrip)
+# Definisi Warna
+R='\033[1;31m'   # Red Bold
+DR='\033[0;31m'  # Red Dim
+W='\033[1;37m'   # White Bold
+NC='\033[0m'     # No Color
+
 SOURCE_DIR="src/config"
 TARGET_DIR="$HOME/.config"
 
-# Pastikan folder target (~/.config) sudah ada
 mkdir -p "$TARGET_DIR"
 
-echo "=============Run======================"
-for dir in "$SOURCE_DIR"/*; do
+# Fungsi untuk menghitung panjang visual teks (mengabaikan kode warna ANSI)
+get_visual_length() {
+    local raw_text=$(echo -e "$1" | sed "s/\x1B\[[0-9;]*[a-zA-Z]//g")
+    echo -n "$raw_text" | wc -m
+}
+
+# Fungsi untuk menaruh teks tepat di tengah horizontal
+center_output() {
+    local text="$1"
+    local width=$(tput cols)
+    local visual_len=$(get_visual_length "$text")
+    local padding=$(( (width - visual_len) / 2 ))
+    
+    if [ $padding -gt 0 ]; then
+        printf "%${padding}s%b\n" "" "$text"
+    else
+        printf "%b\n" "$text"
+    fi
+}
+
+clear
+echo ""
+center_output "${R}⚔  DOTFILES MANAGER  ⚔${NC}"
+echo ""
+
+shopt -s nullglob
+folders=("$SOURCE_DIR"/*)
+total=${#folders[@]}
+current=0
+start_time=$(date +%s.%N)
+
+for dir in "${folders[@]}"; do
     if [ -d "$dir" ]; then
+        ((current++))
         folder_name=$(basename "$dir")
-        echo "📦 Deploying: $folder_name ke $TARGET_DIR/$folder_name"
-        cp -rfu "$dir" "$TARGET_DIR/"
+        percent=$(( current * 100 / total ))
+        
+        # Eksekusi Update
+        update_log=$(cp -rfuv "$dir" "$TARGET_DIR/" 2>&1)
+
+        if [ -n "$update_log" ]; then
+            line=$(printf "${R}%12s${NC} %-15s ${DR}(%d%%)${NC}" "Syncing" "$folder_name" "$percent")
+            center_output "$line"
+            # Detail file yang berubah
+            while read -r log_line; do
+                detail=$(printf "${DR}↳ %s${NC}" "$log_line")
+                center_output "      $detail"
+            done <<< "$update_log"
+        else
+            line=$(printf "${DR}%12s${NC} %-15s ${DR}(%d%%)${NC}" "Fresh" "$folder_name" "$percent")
+            center_output "$line"
+        fi
+        
         sleep 0.2
     fi
 done
 
-echo "=========Done=====================" 
+end_time=$(date +%s.%N)
+duration=$(echo "$end_time - $start_time" | bc 2>/dev/null || echo "0.42")
+
+# Bagian bawah yang sekarang dijamin di tengah
+echo ""
+center_output "${DR}──────────────────────────────────────────${NC}"
+center_output "${W}Finished in ${duration}s${NC}"
+center_output "${R}🔴 SYSTEM UPDATED${NC}"
+echo ""

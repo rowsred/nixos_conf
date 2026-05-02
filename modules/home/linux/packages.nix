@@ -9,6 +9,8 @@
     {
       home.packages = with pkgs; [
         fastfetch
+        google-chrome
+        just
       ];
     };
 }
