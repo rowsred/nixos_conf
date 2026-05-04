@@ -43,13 +43,10 @@
             ];
 
             userSettings = {
-              #remove auto restore
-              "window.restoreWindows" = "none";
-              "files.hotExit" = "off";
-              "search.searchOnType" = false;
-              "history.limit" = 0;
-              "terminal.integrated.enablePersistentSessions" = false;
+              #auto zoom
+              "workbench.sideBar.location" = "right";
               "workbench.startupEditor" = "none";
+              "window.zoomLevel" = 1;
               #scrool remove config
               "editor.scrollbar.vertical" = "hidden";
               "editor.scrollbar.horizontal" = "hidden";
