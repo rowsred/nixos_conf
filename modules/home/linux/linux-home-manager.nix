@@ -7,12 +7,9 @@
 
   configurations.home.row.module = {
     imports = [
-      config.flake.homeModules.neovim
-      #config.flake.homeModules.dotfiles-manager
-      config.flake.homeModules.git
-      config.flake.homeModules.starship
-      config.flake.homeModules.packages
-      config.flake.homeModules.vscode
+      config.flake.homeModules.programs-manager
+      config.flake.homeModules.shell-manager
+      config.flake.homeModules.pkgs
       {
         home = {
           username = "row";
