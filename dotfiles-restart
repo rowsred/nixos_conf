@@ -68,6 +68,44 @@ for dir in "${folders[@]}"; do
     fi
 done
 
+
+
+
+
+#HOME
+# --- SECTION: AUTO RESTORE & MERGE HOME FILES ---
+echo ""
+center_output "${DR}󱂵 SYNCING HOME FILES${NC}"
+
+shopt -s dotglob
+for item in "$SOURCE_DIR"/*; do
+    if [ -f "$item" ]; then
+        item_name=$(basename "$item")
+        target_name=".${item_name#.}" # Memastikan hanya ada satu titik di depan
+        target_path="$HOME/$target_name"
+
+        # Cek apakah file tujuan sudah ada
+        if [ -f "$target_path" ]; then
+            # Bandingkan konten file sumber dan tujuan
+            if ! diff -q "$item" "$target_path" > /dev/null; then
+                # Jika ada perbedaan (perlu merge/update)
+                cp -f "$item" "$target_path"
+                line=$(printf "${R}%12s${NC} %-15s ${W}[Merge Changes]${NC}" "Syncing" "$target_name")
+                center_output "$line"
+            else
+                # Jika konten identik
+                line=$(printf "${DR}%12s %-15s [Up to date]${NC}" "Fresh" "$target_name")
+                center_output "$line"
+            fi
+        else
+            # Jika file belum ada di home (install baru)
+            cp -f "$item" "$target_path"
+            line=$(printf "${G}%12s${NC} %-15s ${DR}(New File)${NC}" "Deployed" "$target_name")
+            center_output "$line"
+        fi
+    fi
+done
+# ----------------------------------------------
 end_time=$(date +%s.%N)
 duration=$(echo "$end_time - $start_time" | bc 2>/dev/null || echo "0.42")
 
