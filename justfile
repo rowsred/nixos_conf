@@ -9,7 +9,7 @@ db := "nix run github:nix-community/home-manager"
 linux_me := "row" 
 linux_wsl:= "wsl" 
 
-homeL:
+home:
     @if [ "{{current_user}}" = "{{linux_me}}" ]; then \
         {{nh}} home switch .; \
     else \
@@ -17,7 +17,7 @@ homeL:
         exit 1; \
     fi
 
-homeLdb:
+homedb:
     @if [ "{{current_user}}" = "{{linux_me}}" ]; then \
         {{db}} -- switch --flake .; \
     else \
@@ -33,10 +33,3 @@ homerm:
         exit 1; \
     fi
 
-homeW:
-    @if [ "{{current_user}}" = "{{linux_wsl}}" ]; then \
-        {{nh}} home switch .; \
-    else \
-        echo "❌ Bukan user wsl!"; \
-        exit 1; \
-    fi
