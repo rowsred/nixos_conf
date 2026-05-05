@@ -1,15 +1,11 @@
-# File: linux-root.nix
+# File: home-manager.nix
 # Author: rowsred
-# Date: 2026-04-29
-# Descriptions:
-{ config, ... }:
-{
-
+# Date: 2026-05-05
+# Descriptions: 
+{config,...}:{
   configurations.home.row.module = {
     imports = [
-      config.flake.homeModules.programs-manager
-      #  config.flake.homeModules.shell-manager
-      config.flake.homeModules.pkgs
+      config.flake.homeModules.package-manager
       {
         home = {
           username = "row";
@@ -19,4 +15,5 @@
       }
     ];
   };
+
 }
