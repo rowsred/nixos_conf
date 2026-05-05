@@ -11,7 +11,6 @@
 
       programs.starship = {
         enable = true;
-        enableBashIntegration = true; # Default is true
       };
     };
 }

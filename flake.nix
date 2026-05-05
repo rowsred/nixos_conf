@@ -10,10 +10,10 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    kwm.url = "github:rowsred/river_kwm_modules_nixos";
-    import-tree.url = "github:vic/import-tree";
+      kwm.url = "github:rowsred/river_kwm_modules_nixos";
+     import-tree.url = "github:vic/import-tree";
     home-manager.url = "github:nix-community/home-manager";
-    niri = {
+     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };

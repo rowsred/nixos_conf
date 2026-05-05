@@ -8,7 +8,7 @@
   configurations.home.row.module = {
     imports = [
       config.flake.homeModules.programs-manager
-      config.flake.homeModules.shell-manager
+      #  config.flake.homeModules.shell-manager
       config.flake.homeModules.pkgs
       {
         home = {
